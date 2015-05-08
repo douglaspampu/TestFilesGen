@@ -8,7 +8,9 @@ SOURCES += main.cpp \
     automato.cpp \
     regex.cpp \
     set.cpp \
-    operacao.cpp
+    operacao.cpp \
+    operador_or.cpp \
+    operador_string.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -18,5 +20,7 @@ HEADERS += \
     automato.h \
     regex.h \
     set.h \
-    operacao.h
+    operacao.h \
+    operador_or.h \
+    operador_string.h
 

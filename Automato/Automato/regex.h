@@ -19,6 +19,7 @@ private:
 
     string get_subexpressions(string _pilha, char token);
     string get_operacao(string _pilha);
+    string get_strings (string _pilha);
 
     int cria_operacao_asterisco();
     string cria_operacao_mais(string _operacao);

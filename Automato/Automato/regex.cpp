@@ -31,6 +31,8 @@ string Regex::cria_automato()
 
     int tamanho;
 
+    int operacao_or = 0;
+
     tam_regex = regex.size();
 
     pilha_strings.push_back("");
@@ -39,6 +41,10 @@ string Regex::cria_automato()
     {
         set *new_set = new set();
         operacao *op = new operacao();
+        operador_string *new_string = new operador_string();
+
+
+        cout<<regex[i]<<endl;
 
         switch(regex[i])
         {
@@ -49,12 +55,17 @@ string Regex::cria_automato()
                 j = subExpressao.size();
 
                 new_set->set_operacao(subExpressao);
-
                 op->put_set(new_set);
 
                 pilha_operacoes.push_back(op);
 
+                cout<<"aqui "<<subExpressao<<" "<<pos<< " " << j+1<<endl;
+
                 pilha.replace(pos - 1, j+1,pilha_strings.back());
+
+                cout<<"aqui"<<endl;
+
+                subExpressao = "";
 
                 break;
 
@@ -64,18 +75,45 @@ string Regex::cria_automato()
                 pos = pilha.find(subExpressao);
                 j = subExpressao.size();
 
-                if(pilha_operacoes.back()->get_set()->cria_operacao_set() != subExpressao)
+                if(pilha_operacoes.empty() || !subExpressao.empty())
                 {
-                    new_set->set_operacao(subExpressao);
+                    new_string->set_string(subExpressao);
 
-                    op->put_set(new_set);
+                    op->put_expressao(new_string);
 
                     pilha_operacoes.push_back(op);
                 }
 
-                cout << "Expressao: " << subExpressao << endl;
+                else if(pilha_operacoes.back()->verifica_conteudo() != 3)
+                {
+                    new_string->set_string(pilha_operacoes.back()->get_expressao());
 
-                pilha.replace(pos - 1, 1,"");
+                    pilha_operacoes.pop_back();
+
+                    op->put_expressao(new_string);
+                    pilha_operacoes.push_back(op);
+                }
+                else
+                {
+                    new_string->set_string(subExpressao);
+
+                    op->put_expressao(new_string);
+
+                    pilha_operacoes.push_back(op);
+                }
+
+
+
+                if(operacao_or == 1)
+                {
+                    pilha_operacoes.pop_back();
+
+                    operacao_or = 0;
+                }
+
+
+                subExpressao = "";
+                pilha.replace(pos, 1,"");
                 break;
 
             case '}':
@@ -86,13 +124,22 @@ string Regex::cria_automato()
 
                 tamanho = cria_operacao_size(subExpressao);
 
-                for (int x = 0; x < tamanho; x++)
+                resultado = "";
+
+                for (int x = 0; x < tamanho+1; x++)
                 {
-                    pilha_operacoes.push_back(pilha_operacoes.back());
+                    resultado += pilha_operacoes.back()->get_expressao();
                 }
+
+                pilha_operacoes.pop_back();
+
+                new_string->set_string(resultado);
+                op->put_expressao(new_string);
+                pilha_operacoes.push_back(op);
 
 
                 pilha.replace(pos - 1, j+1,"");
+                subExpressao = "";
                 break;
 
             case '*':
@@ -103,17 +150,21 @@ string Regex::cria_automato()
 
                 tamanho = cria_operacao_asterisco();
 
-                if(tamanho == 0)
-                {
-                    pilha_operacoes.pop_back();
-                }
+                resultado = "";
+
                 for (int x = 0; x < tamanho; x++)
                 {
-                    pilha_operacoes.push_back(pilha_operacoes.back());
+                    resultado += pilha_operacoes.back()->get_expressao();
                 }
+                pilha_operacoes.pop_back();
+
+                new_string->set_string(resultado);
+                op->put_expressao(new_string);
+                pilha_operacoes.push_back(op);
 
                 pilha.erase(pos, j+1);
 
+                subExpressao = "";
                 break;
 
             case '+':
@@ -126,35 +177,76 @@ string Regex::cria_automato()
 
                 for (int x = 0; x < tamanho; x++)
                 {
-                    pilha_operacoes.push_back(pilha_operacoes.back());
+                    resultado += pilha_operacoes.back()->get_expressao();
                 }
 
+                new_string->set_string(resultado);
+                op->put_expressao(new_string);
+                pilha_operacoes.push_back(op);
                 pilha.erase(pos, j+1);
 
+                subExpressao = "";
                 break;
 
             case '|':
-                subExpressao = get_operacao(pilha);
+                if(pilha_operacoes.empty())
+                {
+                    subExpressao = get_operacao(pilha);
 
-                pos = pilha.find(subExpressao);
-                j = subExpressao.size();
+                    pos = pilha.find(subExpressao);
+                    j = subExpressao.size();
 
-                pilha.erase(pos, j+1);
+                    new_string->set_string(subExpressao);
+
+                    op->put_expressao(new_string);
+
+                    pilha_operacoes.push_back(op);
+
+                    pilha.erase(pos, j+1);
+                }
+
+                if(operacao_or == 0)
+                {
+                    operacao_or = rand() % 2;
+
+                    if(operacao_or == 0)
+                    {
+                        pilha_operacoes.pop_back();
+                    }
+
+                }
+                else
+                {
+                    pilha_operacoes.pop_back();
+                }
+
+                subExpressao = "";
                 break;
+
+            case '[':
+            case '(':
+                if(i > 0)
+                {
+                    cout<<"aqui"<<endl;
+                    cout<<get_strings (pilha)<<endl;
+                }
+                break;
+
             default:
+                cout<<"aqui "<<i<<endl;
                 pilha += regex[i];
+                cout<<"aqui "<<pilha<<endl;
                 break;
         }
-
 
     }
 
     resultado = "";
 
     for (int c = 0; c < pilha_operacoes.size(); c++)
-        resultado += pilha_operacoes[c]->get_set()->cria_operacao_set();
+        resultado += pilha_operacoes[c]->get_expressao();
 
-    cout << "String gerada: "<<resultado;
+    cout << "String gerada: "<<resultado<<endl;
 
     return resultado;
 }
@@ -165,14 +257,11 @@ string Regex::get_subexpressions(string _pilha, char token)
     string subExpressao = "";
 
     j = _pilha.size() - 1;
-    cout<<j<<endl;
     while(_pilha[j] != token)
     {
         subExpressao = _pilha[j] + subExpressao;
         j--;
     }
-
-    cout << subExpressao << endl;
 
     return subExpressao;
 }
@@ -183,14 +272,30 @@ string Regex::get_operacao(string _pilha)
     string subExpressao = "";
 
     j = _pilha.size() - 1;
-    cout<<j<<endl;
-    while((_pilha[j] != '[' && _pilha[j] != '(' && _pilha[j] != '|') && j >= 0)
+    while((_pilha[j] != '[' && _pilha[j] != '(' /*&& _pilha[j] != '|'*/) && j >= 0)
     {
         subExpressao = _pilha[j] + subExpressao;
         j--;
     }
 
-    cout << subExpressao << endl;
+    return subExpressao;
+}
+
+string Regex::get_strings (string _pilha)
+{
+    int j;
+    string subExpressao = "";
+
+    cout<<"aqui"<<endl;
+
+    j = _pilha.size() - 1;
+    cout<<j<<endl;
+    while((_pilha[j] != ']' && _pilha[j] != ')') && j >= 0)
+    {
+        cout<<j<<endl;
+        subExpressao = _pilha[j] + subExpressao;
+        j--;
+    }
 
     return subExpressao;
 }
@@ -208,8 +313,6 @@ int Regex::cria_operacao_asterisco()
 
         fim = rand() % 2;
     }
-
-    cout<<"tamanho: "<<result<<endl;
 
     return result;
 }
@@ -282,8 +385,6 @@ string Regex::cria_operacao_set(string _operacao)
         }
     }
 
-    cout << "inicio: " << inicio_do_range << " fim: " << fim_do_range << endl;
-
     if(inicio_fim)
     {
         int inicio = int(inicio_do_range[0]);
@@ -294,8 +395,6 @@ string Regex::cria_operacao_set(string _operacao)
         range = rand() % range;
 
         retorno = char(range+inicio);
-
-        cout<<"ascii: "<<range+inicio<<" char: " << char(range+inicio)<<endl;
     }
     else
     {
@@ -316,8 +415,6 @@ string Regex::cria_operacao_set(string _operacao)
             }
 
             retorno = char(char_in_set);
-
-            cout<<"char: " << char(char_in_set)<<endl;
         }
         else
         {
@@ -326,8 +423,6 @@ string Regex::cria_operacao_set(string _operacao)
             range = rand() % range;
 
             retorno = inicio_do_range[range];
-
-            cout<<"char: " << inicio_do_range[range]<<endl;
         }
     }
 

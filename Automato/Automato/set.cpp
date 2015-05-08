@@ -59,8 +59,6 @@ string set::cria_operacao_set()
         }
     }
 
-    cout << "inicio: " << inicio_do_range << " fim: " << fim_do_range << endl;
-
     if(inicio_fim)
     {
         int inicio = int(inicio_do_range[0]);
@@ -71,8 +69,6 @@ string set::cria_operacao_set()
         range = rand() % range;
 
         retorno = char(range+inicio);
-
-        cout<<"ascii: "<<range+inicio<<" char: " << char(range+inicio)<<endl;
     }
     else
     {
@@ -94,7 +90,6 @@ string set::cria_operacao_set()
 
             retorno = char(char_in_set);
 
-            cout<<"char: " << char(char_in_set)<<endl;
         }
         else
         {
@@ -104,7 +99,6 @@ string set::cria_operacao_set()
 
             retorno = inicio_do_range[range];
 
-            cout<<"char: " << inicio_do_range[range]<<endl;
         }
     }
 
