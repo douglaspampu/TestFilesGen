@@ -64,7 +64,16 @@ string Regex::cria_automato()
                 pos = pilha.find(subExpressao);
                 j = subExpressao.size();
 
-                cout << pos << " " <<  j+1<< endl;
+                if(pilha_operacoes.back()->get_set()->cria_operacao_set() != subExpressao)
+                {
+                    new_set->set_operacao(subExpressao);
+
+                    op->put_set(new_set);
+
+                    pilha_operacoes.push_back(op);
+                }
+
+                cout << "Expressao: " << subExpressao << endl;
 
                 pilha.replace(pos - 1, 1,"");
                 break;
@@ -74,9 +83,6 @@ string Regex::cria_automato()
 
                 pos = pilha.find(subExpressao);
                 j = subExpressao.size();
-
-                cout << pos << " " <<  j+1<< endl;
-
 
                 tamanho = cria_operacao_size(subExpressao);
 
@@ -94,9 +100,6 @@ string Regex::cria_automato()
 
                 pos = pilha.find(subExpressao);
                 j = subExpressao.size();
-
-                cout << pos << " " <<  j+1<< endl;
-
 
                 tamanho = cria_operacao_asterisco();
 
@@ -119,8 +122,6 @@ string Regex::cria_automato()
                 pos = pilha.find(subExpressao);
                 j = subExpressao.size();
 
-                cout << pos << " " <<  j+1<< endl;
-
                 tamanho = cria_operacao_asterisco();
 
                 for (int x = 0; x < tamanho; x++)
@@ -137,8 +138,6 @@ string Regex::cria_automato()
 
                 pos = pilha.find(subExpressao);
                 j = subExpressao.size();
-
-                cout << pos << " " <<  j+1<< endl;
 
                 pilha.erase(pos, j+1);
                 break;

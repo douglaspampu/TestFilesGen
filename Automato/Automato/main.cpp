@@ -8,7 +8,7 @@ int main()
 {
     Regex *r;
 
-    r = new Regex("[3589]0[03][0-9]{6}[0-9]*");
+    r = new Regex("[3589](0)[03][0-9]{6}[0-9]*");
 
     r->cria_automato();
 
