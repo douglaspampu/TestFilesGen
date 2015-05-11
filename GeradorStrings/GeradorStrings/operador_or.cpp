@@ -6,7 +6,6 @@
 using namespace std;
 operador_or::operador_or()
 {
-    srand (time(NULL));
 }
 
 operador_or::~operador_or()

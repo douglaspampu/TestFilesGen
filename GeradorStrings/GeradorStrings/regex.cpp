@@ -222,7 +222,20 @@ string Regex::cria_automato()
             case '(':
                 if(i > 0)
                 {
-                    ;//cout<<get_strings (pilha)<<endl;
+                    subExpressao = get_strings (pilha);
+
+                    pos = pilha.find(subExpressao);
+                    j = subExpressao.size();
+
+                    new_string->set_string(subExpressao);
+
+                    op->put_expressao(new_string);
+
+                    pilha_operacoes.push_back(op);
+
+                    pilha.replace(pos, j+1,pilha_strings.back());
+
+                    subExpressao = "";
                 }
                 break;
 

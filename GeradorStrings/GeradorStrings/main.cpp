@@ -8,7 +8,7 @@ int main()
 {
     Regex *r;
 
-    r = new Regex("(123[dfg])");
+    r = new Regex("([1-9][a])|([b][1-9])");
 
     r->cria_automato();
 

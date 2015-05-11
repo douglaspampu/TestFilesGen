@@ -5,7 +5,6 @@ CONFIG -= qt
 
 SOURCES += main.cpp \
     operacao.cpp \
-    operador_or.cpp \
     operador_string.cpp \
     regex.cpp \
     set.cpp
@@ -15,7 +14,6 @@ qtcAddDeployment()
 
 HEADERS += \
     operacao.h \
-    operador_or.h \
     operador_string.h \
     regex.h \
     set.h
