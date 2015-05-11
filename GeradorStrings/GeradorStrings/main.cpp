@@ -18,7 +18,8 @@ int main(int argc, char *argv[])
     {
         if(argv[i] == "-file")
         {
-            myfile.open ("example.txt");
+            filename = argv[i+1];
+            i++;
         }
         else
         {
