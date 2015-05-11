@@ -8,7 +8,7 @@ int main()
 {
     Regex *r;
 
-    r = new Regex("([ads])");
+    r = new Regex("(123[dfg])");
 
     r->cria_automato();
 

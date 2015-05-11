@@ -45,9 +45,6 @@ string Regex::cria_automato()
         operacao *op = new operacao();
         operador_string *new_string = new operador_string();
 
-
-        cout<<regex[i]<<endl;
-
         switch(regex[i])
         {
             case ']':
@@ -61,11 +58,7 @@ string Regex::cria_automato()
 
                 pilha_operacoes.push_back(op);
 
-                cout<<"aqui "<<subExpressao<<" "<<pos<< " " << j+1<<endl;
-
-                pilha.replace(pos - 1, j+1,pilha_strings.back());
-
-                cout<<"aqui"<<endl;
+                pilha.replace(pos, j+1,pilha_strings.back());
 
                 subExpressao = "";
 
@@ -229,15 +222,12 @@ string Regex::cria_automato()
             case '(':
                 if(i > 0)
                 {
-                    cout<<"aqui"<<endl;
-                    cout<<get_strings (pilha)<<endl;
+                    ;//cout<<get_strings (pilha)<<endl;
                 }
                 break;
 
             default:
-                cout<<"aqui "<<i<<endl;
                 pilha += regex[i];
-                cout<<"aqui "<<pilha<<endl;
                 break;
         }
 
@@ -259,7 +249,7 @@ string Regex::get_subexpressions(string _pilha, char token)
     string subExpressao = "";
 
     j = _pilha.size() - 1;
-    while(_pilha[j] != token)
+    while(_pilha[j] != token && j >= 0)
     {
         subExpressao = _pilha[j] + subExpressao;
         j--;
@@ -288,13 +278,10 @@ string Regex::get_strings (string _pilha)
     int j;
     string subExpressao = "";
 
-    cout<<"aqui"<<endl;
-
     j = _pilha.size() - 1;
-    cout<<j<<endl;
+
     while((_pilha[j] != ']' && _pilha[j] != ')') && j >= 0)
     {
-        cout<<j<<endl;
         subExpressao = _pilha[j] + subExpressao;
         j--;
     }
