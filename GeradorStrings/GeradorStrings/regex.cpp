@@ -35,6 +35,8 @@ string Regex::cria_automato()
 
     int operacao_or = 0;
 
+    int parentizacao = 0;
+
     tam_regex = regex.size();
 
     pilha_strings.push_back("");
@@ -44,6 +46,7 @@ string Regex::cria_automato()
         set *new_set = new set();
         operacao *op = new operacao();
         operador_string *new_string = new operador_string();
+        operacao_ponto *new_ponto = new operacao_ponto();
 
         switch(regex[i])
         {
@@ -61,6 +64,8 @@ string Regex::cria_automato()
                 pilha.replace(pos, j+1,pilha_strings.back());
 
                 subExpressao = "";
+
+                parentizacao++;
 
                 break;
 
@@ -97,8 +102,6 @@ string Regex::cria_automato()
                     pilha_operacoes.push_back(op);
                 }
 
-
-
                 if(operacao_or == 1)
                 {
                     pilha_operacoes.pop_back();
@@ -106,6 +109,26 @@ string Regex::cria_automato()
                     operacao_or = 0;
                 }
 
+
+                if(parentizacao > 1)
+                {
+                    subExpressao = "";
+                    while (parentizacao > 0)
+                    {
+                        subExpressao = pilha_operacoes.back()->get_expressao() + subExpressao;
+
+                        pilha_operacoes.pop_back();
+
+                        parentizacao--;
+                    }
+
+
+                    new_string->set_string(subExpressao);
+
+                    op->put_expressao(new_string);
+
+                    pilha_operacoes.push_back(op);
+                }
 
                 subExpressao = "";
                 pilha.replace(pos, 1,"");
@@ -237,6 +260,22 @@ string Regex::cria_automato()
 
                     subExpressao = "";
                 }
+
+                if(regex[i] == '(')
+                {
+                    parentizacao = 1;
+                }
+
+                break;
+
+            case '.':
+
+                subExpressao = char(rand() % 256);
+
+                op->put_ponto();
+                pilha_operacoes.push_back(op);
+
+                subExpressao = "";
                 break;
 
             default:

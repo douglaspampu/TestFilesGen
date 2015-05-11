@@ -22,16 +22,6 @@ void operacao::put_set(set *_aux)
     checa_conteudo = 1;
 }
 
-operador_or *operacao::get_or()
-{
-    return Or;
-}
-
-void operacao::put_or(operador_or *_aux)
-{
-    Or = _aux;
-    checa_conteudo = 2;
-}
 
 operador_string *operacao::get_string()
 {
@@ -46,13 +36,16 @@ void operacao::put_expressao(operador_string *_aux)
 
 string operacao::get_expressao()
 {
+    string aux;
+
     switch (checa_conteudo)
     {
         case 1:
             return Set->cria_operacao_set();
             break;
         case 2:
-            return Or->gera_expressao();
+            aux = Ponto->get_string();
+            return aux;
             break;
         case 3:
             return Expressao->get_string();
@@ -63,4 +56,16 @@ string operacao::get_expressao()
 int operacao::verifica_conteudo()
 {
     return checa_conteudo;
+}
+
+char operacao::get_ponto()
+{
+    return Ponto->get_string();
+}
+
+void operacao::put_ponto()
+{
+    Ponto = new operacao_ponto();
+
+    checa_conteudo = 2;
 }

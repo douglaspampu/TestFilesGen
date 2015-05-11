@@ -8,9 +8,7 @@ int main()
 {
     Regex *r;
 
-    r = new Regex("([1-9][a])|([b][1-9])");
-
-    r->cria_automato();
+    r = new Regex("([3589]0[03][0-9]{6}[0-9]*)");
 
     ofstream myfile;
     myfile.open ("example.txt");
