@@ -8,8 +8,17 @@ using namespace std;
 
 int main()
 {
+    time_t sec;
+    time(&sec);
+    srand((unsigned int) sec);
+
     ifstream fin;
     fin.open("teste.txt");
+
+    ofstream fout;
+    fout.open("output.dat");
+
+    string registros;
 
     string arquivo = "", aux;
 
@@ -26,7 +35,9 @@ int main()
 
     ArquivoEntrada *arq = new ArquivoEntrada(arquivo);
 
-    arq->cria_registro();
+    registros = arq->cria_registro();
+
+    fout<<registros;
 
     return 0;
 }

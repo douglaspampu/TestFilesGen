@@ -31,14 +31,10 @@ ArquivoEntrada::ArquivoEntrada(string _arquivo)
             regex = "";
             while(_arquivo[i] != '\n')
             {
-                cout<<_arquivo[i]<<endl;
-
                 aux += _arquivo[i];
 
                 i++;
             }
-
-            cout<<aux<<endl;
 
             num_registros = atoi(aux.c_str());
 
@@ -52,6 +48,14 @@ ArquivoEntrada::ArquivoEntrada(string _arquivo)
 
                 sep = 2;
                 regex = "";
+
+                while(_arquivo[i] != '\n')
+                {
+                    i++;
+                }
+
+                char_separador = _arquivo[i-1];
+
                 i++;
             }
             else if(regex == "FALSE")
@@ -138,10 +142,26 @@ string ArquivoEntrada::cria_registro()
             if(separador)
             {
                 if(!linha.empty())
-                    linha += ',';
+                    linha += char_separador;
 
                 aux = r.cria_automato(regex);
-                cout<<gera_campo(regex)<<endl;
+
+                linha = linha + aux;
+                aux = "";
+            }
+            else
+            {
+                aux = r.cria_automato(regex);
+
+                if(aux.size() < tamanho_maximo)
+                {
+                    while(aux.size() < tamanho_maximo)
+                        aux += ' ';
+                }
+                else
+                {
+                    return "";
+                }
 
                 linha = linha + aux;
                 aux = "";
@@ -152,7 +172,7 @@ string ArquivoEntrada::cria_registro()
 
     }
 
-    cout<<"registro: "<<registro<<endl;
+    cout<<"registro:\n"<<registro<<endl;
     return registro;
 }
 

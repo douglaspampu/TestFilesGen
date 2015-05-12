@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include "C:\Users\douglas.pampu\Documents\TestFileGenerator\GeradorStrings\GeradorStrings\regex.h"
+#include "..\GeradorStrings\GeradorStrings\regex.h"
 
 
 using namespace std;
@@ -19,6 +19,7 @@ public:
 private:
     vector<string> ListaRegex;
     bool separador;
+    string char_separador;
 
     int num_registros;
 

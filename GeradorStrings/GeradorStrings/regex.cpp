@@ -6,9 +6,6 @@ using namespace std;
 
 Regex::Regex(string re)
 {
-    time_t sec;
-    time(&sec);
-    srand((unsigned int) sec);
     regex = re;
 
     //srand (time(NULL));

@@ -1,5 +1,5 @@
-CSV:TRUE
+CSV:FALSE
 NUM:10
 campo1:[0-9]{5};10
 campo2:[a-z]+;10
-campo3:(a|b)+;5
+campo3:(a|b)+;10
