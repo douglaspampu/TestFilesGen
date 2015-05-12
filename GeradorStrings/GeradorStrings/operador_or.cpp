@@ -1,4 +1,4 @@
-#include "operador_or.h"
+
 #include <time.h>
 #include <stdlib.h>
 #include<iostream>

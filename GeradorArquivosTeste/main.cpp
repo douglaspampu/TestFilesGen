@@ -1,13 +1,32 @@
 #include <iostream>
 #include "arquivoentrada.h"
+#include <fstream>
+#include <time.h>
+#include <stdlib.h>
 
 using namespace std;
 
 int main()
 {
-    cout << "Hello World!" << endl;
+    ifstream fin;
+    fin.open("teste.txt");
 
-    ArquivoEntrada *arq = new ArquivoEntrada("CSV:TRUE\nnome_do_campo:regex;tamanho\nnome_do_campo:regex;tamanho");
+    string arquivo = "", aux;
+
+    if (fin.is_open())
+    {
+        while(getline(fin, aux))
+        {
+            arquivo = arquivo + aux+'\n';
+
+            aux = "";
+        }
+    }
+
+
+    ArquivoEntrada *arq = new ArquivoEntrada(arquivo);
+
+    arq->cria_registro();
 
     return 0;
 }

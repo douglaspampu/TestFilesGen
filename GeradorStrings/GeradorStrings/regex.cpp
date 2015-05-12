@@ -6,19 +6,23 @@ using namespace std;
 
 Regex::Regex(string re)
 {
+    time_t sec;
+    time(&sec);
+    srand((unsigned int) sec);
     regex = re;
 
-    srand (time(NULL));
+    //srand (time(NULL));
 
 }
 
 Regex::~Regex()
 {
-
 }
 
-string Regex::cria_automato()
+string Regex::cria_automato(string _reg)
 {
+    regex = _reg;
+
     string pilha;
     vector<string> pilha_strings;
 
@@ -290,7 +294,7 @@ string Regex::cria_automato()
     for (int c = 0; c < pilha_operacoes.size(); c++)
         resultado += pilha_operacoes[c]->get_expressao();
 
-    cout << "String gerada: "<<resultado<<endl;
+    //cout << "String gerada: "<<resultado<<endl;
 
     return resultado;
 }

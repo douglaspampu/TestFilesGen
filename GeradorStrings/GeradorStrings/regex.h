@@ -13,7 +13,7 @@ public:
     Regex(string re);
     ~Regex();
 
-    string cria_automato();
+    string cria_automato(string _reg);
 
 private:
     string regex;

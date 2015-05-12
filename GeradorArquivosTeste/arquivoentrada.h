@@ -14,10 +14,15 @@ public:
     ArquivoEntrada(string _arquivo);
     ~ArquivoEntrada();
 
+    string cria_registro();
 
 private:
     vector<string> ListaRegex;
     bool separador;
+
+    int num_registros;
+
+    Regex *reg;
 
 };
 

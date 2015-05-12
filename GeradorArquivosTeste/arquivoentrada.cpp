@@ -1,8 +1,19 @@
 #include "arquivoentrada.h"
+#include <stdlib.h>
+
+string gera_campo(string regex)
+{
+    Regex *r1 = new Regex("");
+    string campo = r1->cria_automato(regex);
+
+    return campo;
+}
 
 ArquivoEntrada::ArquivoEntrada(string _arquivo)
 {
+    reg = new Regex("");
     string regex;
+    string aux = "";
     int sep = 0;
     for (int i = 0; i < _arquivo.size(); i++)
     {
@@ -13,6 +24,26 @@ ArquivoEntrada::ArquivoEntrada(string _arquivo)
 
             regex = "";
         }
+        else if(regex == "NUM")
+        {
+            i++;
+
+            regex = "";
+            while(_arquivo[i] != '\n')
+            {
+                cout<<_arquivo[i]<<endl;
+
+                aux += _arquivo[i];
+
+                i++;
+            }
+
+            cout<<aux<<endl;
+
+            num_registros = atoi(aux.c_str());
+
+            aux = "";
+        }
         else if(sep == 1)
         {
             if(regex == "TRUE")
@@ -21,6 +52,7 @@ ArquivoEntrada::ArquivoEntrada(string _arquivo)
 
                 sep = 2;
                 regex = "";
+                i++;
             }
             else if(regex == "FALSE")
             {
@@ -28,14 +60,16 @@ ArquivoEntrada::ArquivoEntrada(string _arquivo)
 
                 sep = 2;
                 regex = "";
+                i++;
             }
+
         }
         else if(_arquivo[i] == ':')
         {
             regex = "";
             i++;
 
-            while(_arquivo[i] != '\n' && i < _arquivo.size())
+            while(_arquivo[i] != char(10) && i < _arquivo.size())
             {
                 regex += _arquivo[i];
                 i++;
@@ -58,5 +92,67 @@ ArquivoEntrada::ArquivoEntrada(string _arquivo)
 ArquivoEntrada::~ArquivoEntrada()
 {
 
+}
+
+string ArquivoEntrada::cria_registro()
+{
+    string regex;
+    string registro;
+    string linha;
+    string aux, aux_tam;
+
+
+    Regex r("");
+
+
+    int tamanho_maximo;
+    int NRegistros = 0;
+
+    while(NRegistros < num_registros)
+    {
+        linha = "";
+        for (int i = 0; i < ListaRegex.size(); i++)
+        {
+            int j = 0;
+            aux = ListaRegex[i];
+
+            regex = "";
+            while(aux[j] != ';')
+            {
+                regex += aux[j];
+
+                j++;
+            }
+
+            j++;
+            aux_tam = "";
+            while(j < aux.size())
+            {
+                aux_tam += aux[j];
+
+                j++;
+            }
+
+            tamanho_maximo = atoi(aux_tam.c_str());
+
+            if(separador)
+            {
+                if(!linha.empty())
+                    linha += ',';
+
+                aux = r.cria_automato(regex);
+                cout<<gera_campo(regex)<<endl;
+
+                linha = linha + aux;
+                aux = "";
+            }
+        }
+        registro += linha + '\n';
+        NRegistros++;
+
+    }
+
+    cout<<"registro: "<<registro<<endl;
+    return registro;
 }
 

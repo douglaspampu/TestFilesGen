@@ -8,7 +8,6 @@ using namespace std;
 
 set::set()
 {
-    srand (time(NULL));
 }
 
 set::~set()
