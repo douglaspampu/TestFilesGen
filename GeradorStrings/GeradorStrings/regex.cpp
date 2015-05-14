@@ -30,6 +30,7 @@ string Regex::cria_automato(string _reg)
 
     int j;
     int tam_regex;
+    int flag_concatenacao = 0;
     string::size_type pos;
 
     int tamanho;
@@ -47,7 +48,6 @@ string Regex::cria_automato(string _reg)
         set *new_set = new set();
         operacao *op = new operacao();
         operador_string *new_string = new operador_string();
-        operacao_ponto *new_ponto = new operacao_ponto();
 
         switch(regex[i])
         {
@@ -78,11 +78,14 @@ string Regex::cria_automato(string _reg)
 
                 if(pilha_operacoes.empty() || !subExpressao.empty())
                 {
+
                     new_string->set_string(subExpressao);
 
                     op->put_expressao(new_string);
 
                     pilha_operacoes.push_back(op);
+
+                    pilha.replace(pos, j,"");
                 }
 
                 else if(pilha_operacoes.back()->verifica_conteudo() != 3)
@@ -93,6 +96,8 @@ string Regex::cria_automato(string _reg)
 
                     op->put_expressao(new_string);
                     pilha_operacoes.push_back(op);
+
+                    pilha.replace(pos, 1,"");
                 }
                 else
                 {
@@ -101,21 +106,49 @@ string Regex::cria_automato(string _reg)
                     op->put_expressao(new_string);
 
                     pilha_operacoes.push_back(op);
+
+                    pilha.replace(pos, j,"");
+                }
+
+                if(flag_concatenacao == 1)
+                {
+                    subExpressao = pilha_operacoes.back()->get_expressao();
+                    pilha_operacoes.pop_back();
+                    subExpressao = pilha_operacoes.back()->get_expressao() + subExpressao;
+                    pilha_operacoes.pop_back();
+
+                    //cout<<"subs "<<subExpressao<<endl;
+
+                    new_string->set_string(subExpressao);
+
+                    op->put_expressao(new_string);
+
+                    pilha_operacoes.push_back(op);
+
+                    flag_concatenacao = 0;
                 }
 
                 if(operacao_or == 1)
                 {
                     pilha_operacoes.pop_back();
 
+                    parentizacao--;
+
                     operacao_or = 0;
                 }
+
+                //cout<<"aqui "<<pilha<<" pilha "<<pilha_operacoes.back()->get_expressao()<<endl;
 
 
                 if(parentizacao > 1)
                 {
+                    //cout<<pilha_operacoes.size()<<endl;
+
                     subExpressao = "";
                     while (parentizacao > 0)
                     {
+                        //cout<<parentizacao<<endl;
+
                         subExpressao = pilha_operacoes.back()->get_expressao() + subExpressao;
 
                         pilha_operacoes.pop_back();
@@ -131,8 +164,12 @@ string Regex::cria_automato(string _reg)
                     pilha_operacoes.push_back(op);
                 }
 
+                //cout<<"aqui "<<pilha<<" pilha "<<pilha_operacoes.back()->get_expressao()<<endl;
+
+
                 subExpressao = "";
-                pilha.replace(pos, 1,"");
+                //pilha.replace(pos, 1,"");
+
                 break;
 
             case '}':
@@ -208,10 +245,9 @@ string Regex::cria_automato(string _reg)
                 break;
 
             case '|':
-                if(pilha_operacoes.empty())
+                if(pilha_operacoes.empty() || (regex[i - 1] != ')' && regex[i - 1] != ']' && regex[i - 1] != '}'))
                 {
                     subExpressao = get_operacao(pilha);
-
                     pos = pilha.find(subExpressao);
                     j = subExpressao.size();
 
@@ -224,6 +260,24 @@ string Regex::cria_automato(string _reg)
                     pilha.erase(pos, j+1);
                 }
 
+                if(flag_concatenacao == 1)
+                {
+                    subExpressao = pilha_operacoes.back()->get_expressao();
+                    pilha_operacoes.pop_back();
+                    subExpressao = pilha_operacoes.back()->get_expressao() + subExpressao;
+                    pilha_operacoes.pop_back();
+
+                    //cout<<"subs "<<subExpressao<<endl;
+
+                    new_string->set_string(subExpressao);
+
+                    op->put_expressao(new_string);
+
+                    pilha_operacoes.push_back(op);
+
+                    flag_concatenacao = 0;
+                }
+
                 if(operacao_or == 0)
                 {
                     operacao_or = rand() % 2;
@@ -231,12 +285,15 @@ string Regex::cria_automato(string _reg)
                     if(operacao_or == 0)
                     {
                         pilha_operacoes.pop_back();
+
+                        parentizacao--;
                     }
 
                 }
                 else
                 {
                     pilha_operacoes.pop_back();
+                    parentizacao--;
                 }
 
                 subExpressao = "";
@@ -260,6 +317,8 @@ string Regex::cria_automato(string _reg)
                     pilha.replace(pos, j+1,pilha_strings.back());
 
                     subExpressao = "";
+
+                    flag_concatenacao = 1;
                 }
 
                 if(regex[i] == '(')
@@ -283,15 +342,12 @@ string Regex::cria_automato(string _reg)
                 pilha += regex[i];
                 break;
         }
-
     }
 
     resultado = "";
 
     for (int c = 0; c < pilha_operacoes.size(); c++)
         resultado += pilha_operacoes[c]->get_expressao();
-
-    //cout << "String gerada: "<<resultado<<endl;
 
     return resultado;
 }

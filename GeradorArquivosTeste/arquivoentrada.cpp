@@ -89,8 +89,8 @@ ArquivoEntrada::ArquivoEntrada(string _arquivo)
         regex += _arquivo[i];
     }
 
-    for (int i = 0; i < ListaRegex.size(); i++)
-        cout<<ListaRegex[i]<<endl;
+    //for (int i = 0; i < ListaRegex.size(); i++)
+        //cout<<ListaRegex[i]<<endl;
 }
 
 ArquivoEntrada::~ArquivoEntrada()
@@ -153,7 +153,7 @@ string ArquivoEntrada::cria_registro()
             {
                 aux = r.cria_automato(regex);
 
-                if(aux.size() < tamanho_maximo)
+                if(aux.size() <= tamanho_maximo)
                 {
                     while(aux.size() < tamanho_maximo)
                         aux += ' ';
@@ -172,7 +172,7 @@ string ArquivoEntrada::cria_registro()
 
     }
 
-    cout<<"registro:\n"<<registro<<endl;
+    //cout<<"registro:\n"<<registro<<endl;
     return registro;
 }
 
